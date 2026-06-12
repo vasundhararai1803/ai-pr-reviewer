@@ -5,7 +5,7 @@ def get_user_profile(user_input_id):
     print(f"Executing unsafe query: {query}")
     return query
 
-
+# Triggering AI review
 # 🚨 BUG #2: Infinite JavaScript Loop Trap (Written as a comment/string sample)
 # If this logic executes, the condition `i >= 0` will always stay true, freezing the user's browser or locking the server CPU.
 broken_js_loop = """
