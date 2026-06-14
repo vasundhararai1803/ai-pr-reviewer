@@ -1,10 +1,10 @@
-# Production-Grade Automated AI PR Reviewer Engine 🚀
+# Production-Grade Automated AI PR Reviewer Engine 
 
 An asynchronous, containerized, and security-hardened GitHub App engine that delivers multi-dimensional code reviews. Powered by a single-payload LLM routing pipeline, this platform conducts structural syntax checking, highlights security vulnerabilities, evaluates architectural impact, and publishes structured, batch-aligned reviews directly onto pull request threads natively.
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 Unlike standard synchronous AI wrappers that block request flows and trigger GitHub webhook timeouts, this engine is built around an out-of-band asynchronous dispatch model. 
 
@@ -15,7 +15,7 @@ Unlike standard synchronous AI wrappers that block request flows and trigger Git
 
 ---
 
-## 🛠️ Feature Breakdown & Hardening
+## Feature Breakdown & Hardening
 
 * **Prompt Fencing Guardrails:** Protects against active prompt-injection attacks. Code patches are tightly sandboxed inside explicit `[START OF UNTRUSTED CODE DATA]` structural boundaries, accompanied by system instructions forcing the core model to treat incoming characters purely as literal string payloads for static evaluation.
 * **Deterministic Configuration Lifecycle:** Mitigates risk by stripping out local file globbing for credential detection. Cryptographic asymmetric `.pem` RSA keys are systematically parsed directly from injected, environment-isolated configurations managed safely inside Docker boundaries.
@@ -23,7 +23,7 @@ Unlike standard synchronous AI wrappers that block request flows and trigger Git
 
 ---
 
-## 📊 Empirical Evaluation & Quality Engineering
+## Empirical Evaluation & Quality Engineering
 
 To prevent system drift and curb the number-one defect of AI tooling—hallucinations and false positives—this project includes a dedicated, empirical verification harness. The review system does not just prompt a model; it metrics-tests it.
 
