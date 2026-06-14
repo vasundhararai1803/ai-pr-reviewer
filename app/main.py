@@ -40,7 +40,7 @@ def generate_jwt() -> str:
     payload = {
         "iat": int(time.time()) - 60,
         "exp": int(time.time()) + (10 * 60),
-        "iss": int(APP_ID)
+        "iss": str(APP_ID)
     }
     return jwt.encode(payload, private_key, algorithm="RS256")
 
@@ -134,10 +134,10 @@ async def review_pull_request(payload: dict):
         }
         
         system_prompt = (
-            "You are an elite senior software architect. Inspect the following Git diff patch. "
-            "Identify critical bugs, syntax crashes, or major security leaks. "
-            "You MUST respond ONLY with a raw valid JSON object matching this schema:\n"
+            "You are an elite senior software architect reviewing a Pull Request. "
+            "You MUST respond ONLY with a raw valid JSON object matching exactly this schema:\n"
             "{\n"
+            '  "summary": "Full markdown Master Summary report (Overview, Architectural changes, and Security rating)",\n'
             '  "reviews": [\n'
             '    {"file_path": "sample.py", "line_number": 12, "comment": "Bug explanation here"}\n'
             "  ]\n"
@@ -154,6 +154,7 @@ async def review_pull_request(payload: dict):
             "response_format": {"type": "json_object"}
         }
         
+        print("🤖 Invoking LLM for combined PR Summary and Inline Comments...")
         llm_response = await async_client.post(groq_url, json=groq_payload, headers=groq_headers)
         llm_response.raise_for_status()
         raw_output = llm_response.json()['choices'][0]['message']['content']
@@ -162,13 +163,27 @@ async def review_pull_request(payload: dict):
         print(f"❌ LLM Parsing layer failure: {str(e)}")
         return
 
-    review_comments_url = f"https://api.github.com/repos/{repo_name}/pulls/{pr_number}/comments"
     post_headers = {
         "Authorization": f"token {installation_token}",
         "Accept": "application/vnd.github.v3+json",
         "User-Agent": "AI-PR-Reviewer-Engine"
     }
 
+    # 1. Post Master Summary
+    pr_summary_markdown = structured_data.get("summary", "")
+    if pr_summary_markdown:
+        issue_comment_url = f"https://api.github.com/repos/{repo_name}/issues/{pr_number}/comments"
+        try:
+            resp = await async_client.post(issue_comment_url, json={"body": pr_summary_markdown}, headers=post_headers)
+            if resp.status_code == 201:
+                print("🥇 SUCCESS: Posted top-level PR Architectural Summary!")
+            else:
+                print(f"⚠️ Failed to post summary to GitHub API. Status code: {resp.status_code}")
+        except Exception as e:
+            print(f"❌ Error posting architectural summary: {str(e)}")
+
+    # 2. Post Inline Comments
+    review_comments_url = f"https://api.github.com/repos/{repo_name}/pulls/{pr_number}/comments"
     for review in structured_data.get("reviews", []):
         file_path = review.get("file_path")
         line_number = review.get("line_number")
