@@ -53,5 +53,5 @@ def test_webhook_valid_signature():
             "Content-Type": "application/json"
         }
     )
-    assert response.status_code == 200
-    assert response.json() == {"status": "ok"}
+    assert response.status_code == 202
+    assert response.json() == {"status": "accepted", "detail": "Task queued successfully."}

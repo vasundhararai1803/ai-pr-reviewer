@@ -16,6 +16,10 @@ app = FastAPI(
     description="Production-hardened GitHub App Webhook Processor."
 )
 
+@app.get("/health")
+def health_check():
+    return {"status": "healthy"}
+
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 APP_ID = os.getenv("GITHUB_APP_ID")
 from app.config import settings
