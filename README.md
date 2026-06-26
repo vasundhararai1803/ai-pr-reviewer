@@ -1,5 +1,17 @@
 # Production-Grade Automated AI PR Reviewer Engine 
 
+**An asynchronous, containerized AI code review engine built with FastAPI, Docker, and Groq.**
+
+## 📷 Live Demo & System Proof
+
+![Live Demo & System Proof](assets/demo_screenshot.png)
+
+## 🧠 Engineering Decisions & Core Tradeoffs
+
+- **Asynchronous vs. Synchronous Webhook Processing**: Leverages FastAPI `BackgroundTasks` to establish an instant `202 Accepted` handshake. This gracefully bypasses GitHub's strict 10-second webhook timeout and executes deep LLM analysis safely out-of-band.
+- **Noise Mitigation via Unified Batched Reviews**: Eliminates fragile custom diff arithmetic by grouping all line annotations into a single structured JSON array. Native GitHub `POST /reviews` batched mutations are used to prevent comment spam and minimize API latency.
+- **Prompt Fencing & Input Isolation**: Hardened against prompt injection attacks by securely wrapping untrusted code patches inside literal string token boundaries (e.g., `[START OF UNTRUSTED CODE DATA]`).
+
 An asynchronous, containerized, and security-hardened GitHub App engine that delivers multi-dimensional code reviews. Powered by a single-payload LLM routing pipeline, this platform conducts structural syntax checking, highlights security vulnerabilities, evaluates architectural impact, and publishes structured, batch-aligned reviews directly onto pull request threads natively.
 
 ---
