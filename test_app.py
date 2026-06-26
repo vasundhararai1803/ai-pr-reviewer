@@ -3,7 +3,7 @@ import asyncio
 import pytest
 from app.main import get_installation_access_token, async_client
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_handshake():
     # Grab the installation ID from your app settings or previous logs
     # If you don't know it, look at your GitHub App Settings -> Install App -> The number in the URL!
