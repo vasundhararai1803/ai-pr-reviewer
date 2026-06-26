@@ -6,7 +6,7 @@
 
 ![Live Demo & System Proof](assets/demo_screenshot.png)
 
-## 🧠 Architectural Decisions & Production Tradeoffs
+## Architectural Decisions & Production Tradeoffs
 
 Building a production-grade webhook consumer requires designing for failure, rate limits, and network asynchronous boundaries. Below is the engineering rationale behind the core architectural choices of this engine.
 
